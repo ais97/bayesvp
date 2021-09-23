@@ -110,16 +110,16 @@ class DefineParams:
 
         # Paths and fname strings
         for line in self.lines:
-            line = filter(None,line.split(' '))
+            line = list(filter(None,line.split(' ')))
 
             if 'spec_path' in line or 'input' in line or 'spectrum' in line:
-                if line[1] == 'test_path_to_spec':
+                if line [1] == 'test_path_to_spec':
                     self.spec_path = (os.path.dirname(os.path.abspath(__file__)) + 
                                      '/data/example')
                     self.self_bvp_test = True
 
                 else:
-                    self.spec_path = line[1]
+                    self.spec_path = line [1]
             elif 'outpath' in line: 
                 self.short_outpath = line[1] 
             elif 'output' in line or 'chain' in line:
@@ -177,6 +177,7 @@ class DefineParams:
 
         spec_data_array = spec_fname_line.split(' ')
         self.spec_short_fname = spec_data_array[1]
+        ######print('-----------------------------------', self.spec_path.name, spec_data_array[1])
         self.spec_fname = self.spec_path + '/' + spec_data_array[1]
 
         # Select spectral range to fit
@@ -243,7 +244,8 @@ class DefineParams:
         transitions_params_array = []
         for i in range(len(component_lines)):
             line = component_lines[i]
-            line = filter(None,line.split(' '))
+            #------> line = filter(None,line.split(' '))
+            line = list(filter(None,line.split(' ')))
 
             atom  = line[1]; state = line[2] # To obtain transition data
             logNs.append(line[3])
@@ -402,7 +404,7 @@ class DefineParams:
         self.priors = np.zeros((3,2))
         for line in self.lines:
             line = np.array(line.split(' '))
-            line = filter(None,line)
+            line = list(filter(None,line))
             if 'logN' in line:
                 if len(line) != 3:
                     sys.exit('Error! In config file, format for logN prior:\n logN min_logN max_logN\nExiting program...')
@@ -435,12 +437,12 @@ class DefineParams:
         with open(self.output_path + '/' + self.config_basename,'w') as f_config:
             # Paths and fname strings
             for line in self.lines:
-                tmp_line = filter(None,line.split(' '))
+                tmp_line = list(filter(None,line.split(' ')))
 
                 if 'spec_path' in tmp_line or 'input' in tmp_line or 'spectrum' in tmp_line:
                     if tmp_line[1] == 'test_path_to_spec':
                         cwd = os.getcwd()
-                        print cwd + self.output_path[1:]
+                        print(cwd + self.output_path[1:])
                         f_config.write('spec_path %s\n' % (cwd + self.output_path[1:]))
                 else:
                     f_config.write('%s\n' % line)

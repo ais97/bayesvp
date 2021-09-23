@@ -35,8 +35,9 @@ class ProcessModel:
     def __init__(self,config_param):
 
         self.config_param = config_param
+        print(self.config_param)
         mcmc_chain_fname = config_param.chain_fname + '.npy'
-        print config_param.chain_fname
+        print(config_param.chain_fname)
         self.burnin = compute_burnin_GR(config_param.chain_fname + '_GR.dat')
         
         self.mcmc_chain = np.load(mcmc_chain_fname)
@@ -111,7 +112,7 @@ class ProcessModel:
             f.write('# %sx1e5\t%s\n' % (param_type, 'log10(pdf)'))
         else:
             f.write('# %s\t%s\n' % (param_type, 'log10(pdf)'))
-        for i in xrange(len(x)):
+        for i in range(len(x)):
             if not np.isinf(log_pdf[i]):
                 f.write('%.4f\t%.16f\n' % (x[i], log_pdf[i]))
         f.close()
@@ -238,7 +239,7 @@ class ProcessModel:
         steps = data[0]; grs = data[1:]
         
         plt.figure(1,figsize=(6,6))
-        for i in xrange(len(grs)):
+        for i in range(len(grs)):
             plt.plot(steps,grs[i]-1,lw=1.5,label=self.gr_param_label[i])
             
         plt.legend(loc='best')

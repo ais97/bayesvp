@@ -49,7 +49,7 @@ def determine_autovp(config_fname):
 				f.write(line); f.write('\n')
 		
 		for line in component_line:
-			for n in xrange(1,n_component+1):
+			for n in range(1,n_component+1):
 				f.write(line); f.write('\n')
 		f.close()
 
@@ -81,7 +81,7 @@ def determine_autovp(config_fname):
 
 	if auto_vp:
 		# Produce Config files
-		for n in xrange(n_component_min,n_component_max+1):
+		for n in range(n_component_min,n_component_max+1):
 			replicate_config(config_fname,normal_lines,component_line,n)
 
 	return auto_vp, n_component_min, n_component_max
@@ -100,7 +100,7 @@ def model_info_criterion(obs_spec_obj):
 	#if obs_spec_obj.model_selection.lower() in ('odds','bf'):
 	#	return local_density_bf(obs_spec_obj) 
 
-	from likelihood import Posterior
+	from bayesvp.likelihood import Posterior
 	# Define the posterior function based on data
 	lnprob = Posterior(obs_spec_obj)
 
@@ -245,7 +245,7 @@ def write_mcmc_stats(config_params_obj,output_fname):
 	f.write('x_med\tx_mean\tx_std\tx_cfl11\tx_cfl12\t x_cfl21\tx_cfl22\n')
 	
 	n_params = np.shape(chain)[-1]
-	for i in xrange(n_params):
+	for i in range(n_params):
 		x            = chain[burnin:,:,i].flatten()
 		output_stats = compute_stats(x)
 		f.write('%f\t%f\t%f\t%f\t%f\t%f\t%f\n' % 
@@ -258,49 +258,47 @@ def write_mcmc_stats(config_params_obj,output_fname):
 	return
 
 def extrapolate_pdf(x,pdf,left_boundary_x,right_boundary_x,x_stepsize,slope=10):
-    """ 
-    Extrapolate the log10(pdf) outside the range of (min_x,max_x) with 
-    some logarithmic slope 
-    """
-    np.seterr(all='ignore') # Ignore floating point warnings.
-    log_pdf = np.log10(pdf)
-    min_x = min(x); max_x = max(x)
+	""" 
+	Extrapolate the log10(pdf) outside the range of (min_x,max_x) with 
+	some logarithmic slope 
+	"""
+	np.seterr(all='ignore') # Ignore floating point warnings.
+	log_pdf = np.log10(pdf)
+	min_x = min(x); max_x = max(x)
     #x_stepsize = np.median(x[1:]-x[:-1])
 
-    entered_left_condition = False
-    if min_x >= left_boundary_x:
-
-        # equation of a line with +10 slope going down to the left.
-        left_added_x = np.arange(left_boundary_x,min_x,x_stepsize) 
-        m = slope; b = log_pdf[0] - m*min_x
-        left_pdf = m*left_added_x + b 
+	entered_left_condition = False
+	if min_x >= left_boundary_x:
+    	# equation of a line with +10 slope going down to the left.
+		left_added_x = np.arange(left_boundary_x,min_x,x_stepsize) 
+		m = slope; b = log_pdf[0] - m*min_x
+		left_pdf = m*left_added_x + b 
     
         # Combine the two segments    
-        new_x = np.concatenate((left_added_x,x))
-        log_pdf = np.concatenate((left_pdf,log_pdf))
+		new_x = np.concatenate((left_added_x,x))
+		log_pdf = np.concatenate((left_pdf,log_pdf))
         
-        entered_left_condition = True
-    
-    if max_x <= right_boundary_x:
+		entered_left_condition = True
+	if max_x <= right_boundary_x:
         
         # Equation of a line with -10 slope going down to the right.
-        right_added_x = np.arange(max_x,right_boundary_x,x_stepsize)
-        m = -slope; b = log_pdf[-1] - m*max_x
-        right_pdf = m*right_added_x + b
+		right_added_x = np.arange(max_x,right_boundary_x,x_stepsize)
+		m = -slope; b = log_pdf[-1] - m*max_x
+		right_pdf = m*right_added_x + b
         
-        # In case new_x is not defined yet if not entered previous condition
-        if entered_left_condition:
-            new_x = np.concatenate((new_x,right_added_x))
-        else:
-            new_x = np.concatenate((x,right_added_x))
-        log_pdf = np.concatenate((log_pdf,right_pdf))        
+	# In case new_x is not defined yet if not entered previous condition
+		if entered_left_condition:
+			new_x = np.concatenate((new_x,right_added_x))
+		else:
+			new_x = np.concatenate((x,right_added_x))
+		log_pdf = np.concatenate((log_pdf,right_pdf))        
 
-    # Normalize the pdf
-	pdf_tmp2  = 10**log_pdf/np.sum((10**log_pdf)*(x_stepsize))
-	inds = np.where(pdf_tmp2<0)[0]
-	pdf_tmp2[inds] = np.min(pdf_tmp2)
-	log_pdf = np.log10(pdf_tmp2)
-    return new_x, log_pdf
+	# Normalize the pdf
+		pdf_tmp2 = 10**log_pdf/np.sum((10**log_pdf)*(x_stepsize))
+		inds = np.where(pdf_tmp2<0)[0]
+		pdf_tmp2[inds] = np.min(pdf_tmp2)
+		log_pdf = np.log10(pdf_tmp2)
+	return new_x, log_pdf
 
 
 
@@ -350,7 +348,7 @@ def gr_indicator(chain):
 	nsteps = float(nsteps); nwalkers = float(nwalkers)
     
 	Rgrs = np.zeros(ndim)
-	for n in xrange(ndim):
+	for n in range(ndim):
 		x = chain[:,:,n]
 		# average of within-chain variance over all walkers
 		W = np.mean(np.var(x,axis=0)) # i.e within-chain variance

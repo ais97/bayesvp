@@ -90,7 +90,7 @@ class Posterior(object):
 
         model_redshifts = []
         
-        for i in xrange(len(final_vp_params_type)):
+        for i in range(len(final_vp_params_type)):
             if final_vp_params_type[i] == 'logN':
                 sum_logN_prior += tophat_prior(alpha[i],min_logN,max_logN)
             elif final_vp_params_type[i] == 'b':
@@ -132,3 +132,4 @@ class Posterior(object):
             return -np.inf
         else:
             return np.atleast_1d(lp + self.lnlike(alpha))[0]
+            

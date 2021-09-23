@@ -193,7 +193,7 @@ def simple_spec(logN, b, z, wave, atom=None, state=None, lsf=1):
     n_transitions = len(atomic_params)
     
     spec = []
-    for l in xrange(n_transitions):
+    for l in range(n_transitions):
         if not np.isnan(atomic_params[l]).any():
             model_flux = general_intensity(logN,b,z,wave,atomic_params[l]) 
             spec.append(convolve_lsf(model_flux,lsf)) 
@@ -227,11 +227,11 @@ def generic_prediction(alpha, obs_spec_obj):
     component_flags = obs_spec_obj.vp_params_flags.reshape(obs_spec_obj.n_component,3)
 
     spec = [] 
-    for i in xrange(obs_spec_obj.n_component):
+    for i in range(obs_spec_obj.n_component):
         # Re-group parameters intro [logN, b,z] for each component
 
         temp_alpha = np.zeros(3)
-        for j in xrange(3):
+        for j in range(3):
             # NaN indicates parameter has been fixed
             if np.isnan(component_flags[i][j]): 
                 # access the fixed value from vp_params after removing the upper case letter 
@@ -244,9 +244,9 @@ def generic_prediction(alpha, obs_spec_obj):
         # Compute spectrum for each component, region, and transition.
         n_wavelength_regions = len(obs_spec_obj.wave_begins)
  
-        for k in xrange(n_wavelength_regions):  
+        for k in range(n_wavelength_regions):  
             n_transitions = len(obs_spec_obj.transitions_params_array[i][k])
-            for l in xrange(n_transitions):
+            for l in range(n_transitions):
                 if not np.isnan(obs_spec_obj.transitions_params_array[i][k][l]).any():
                     model_flux = general_intensity(temp_alpha[0],temp_alpha[1],temp_alpha[2],obs_spec_obj.wave,obs_spec_obj.transitions_params_array[i][k][l])
 

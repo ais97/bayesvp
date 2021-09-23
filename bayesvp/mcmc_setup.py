@@ -57,7 +57,7 @@ def _create_walkers_init(config_params):
 	final_vp_params_type = config_params.vp_params_type[~np.isnan(config_params.vp_params_flags)]
 
 	p0 = np.zeros((n_params,config_params.nwalkers))
-	for i in xrange(n_params):
+	for i in range(n_params):
 		# Match priors with the parameter types
 		if final_vp_params_type[i] == 'logN':
 			p0[i] = np.random.uniform(config_params.priors[0][0],
@@ -142,7 +142,7 @@ def bvp_mcmc_single(config_params,chain_filename_ncomp = None):
 	# Compute Gelman-Rubin Indicator
 	dnsteps = int(config_params.nsteps*0.05)
 	n_steps = []; Rgrs = []	
-	for n in xrange(dnsteps,config_params.nsteps):
+	for n in range(dnsteps,config_params.nsteps):
 		if n % dnsteps == 0:
 			Rgrs.append(gr_indicator(sampler.chain[:n,:,:]))
 			n_steps.append(n)
@@ -155,7 +155,7 @@ def bvp_mcmc_single(config_params,chain_filename_ncomp = None):
 	return 
 
 
-def bvp_mcmc(config_fname,print_config=False):
+def bvp_mcmc(config_fname,print_config=True):
 	"""
 	Run fixed number of component fit specified by the 
 	config file or make copies of the configs and run up 
@@ -180,7 +180,7 @@ def bvp_mcmc(config_fname,print_config=False):
 
 	if auto_vp:
 		model_evidence = np.zeros(n_component_max-n_component_min+1)
-		for n in xrange(n_component_max-n_component_min+1):
+		for n in range(n_component_max-n_component_min+1):
 
 			# Get new config filename; 
 			basename_with_path, config_extension = os.path.splitext(config_fname)
@@ -203,8 +203,8 @@ def bvp_mcmc(config_fname,print_config=False):
 				#if config_params.model_selection.lower() in ('odds','bf'):   
 				#	index = np.where(model_evidence[:n+1] == np.max(model_evidence[:n+1]))[0]
 
-				if config_params.model_selection.lower() in ('aic','bic'):
-					index = np.where(model_evidence[:n+1] == np.min(model_evidence[:n+1]))[0]
+				#if config_params.model_selection.lower() in ('aic','bic'):
+					#index = np.where(model_evidence[:n+1] == np.min(model_evidence[:n+1]))[0]
 
 				# Compare BIC/AIC/Odds ratios
 				if compare_model(model_evidence[n-1], model_evidence[n],config_params.model_selection):
