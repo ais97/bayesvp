@@ -243,7 +243,7 @@ def generic_prediction(alpha, obs_spec_obj):
 
         # Compute spectrum for each component, region, and transition.
         n_wavelength_regions = len(obs_spec_obj.wave_begins)
- 
+        #print(obs_spec_obj.wave_begins)
         for k in range(n_wavelength_regions):  
             n_transitions = len(obs_spec_obj.transitions_params_array[i][k])
             for l in range(n_transitions):
@@ -251,8 +251,11 @@ def generic_prediction(alpha, obs_spec_obj):
                     model_flux = general_intensity(temp_alpha[0],temp_alpha[1],temp_alpha[2],obs_spec_obj.wave,obs_spec_obj.transitions_params_array[i][k][l])
 
                     # Convolve (potentially )LSF for each region 
-                    spec.append(convolve_lsf(model_flux,obs_spec_obj.lsf[k])) 
-    
+                    
+                    if i>0 or l>0:
+                        spec.append(model_flux)
+                    else:
+                        spec.append(convolve_lsf(model_flux,obs_spec_obj.lsf[0])) 
     # Return the convolved model flux with LSF
     return np.product(spec,axis=0)
 
