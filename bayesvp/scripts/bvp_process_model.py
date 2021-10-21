@@ -166,38 +166,73 @@ class ProcessModel:
         """
         c = 299792.485 # [km/s]
         #print(self.config_param.transitions_params_array[0][1][0][1])
+        
         kk = len(self.config_param.transitions_params_array[0,0,:,1])
         print(kk)
+        if kk!=1:
+            #if central_wave == None:
+                # Use the first transition as the central wavelength
+            for i in range(kk):
+                central_wave = self.config_param.transitions_params_array[0][0][i][1]
+                #else:
+                 #   central_wave = float(central_wave)
         
-        #if central_wave == None:
-            # Use the first transition as the central wavelength
-        for i in range(kk):
-            central_wave = self.config_param.transitions_params_array[0][0][i][1]
-            #else:
-             #   central_wave = float(central_wave)
-    
-            obs_spec_wave = self.config_param.wave / (1+redshift) 
-            obs_spec_dv = c*(obs_spec_wave - central_wave) / central_wave
-            plt.rc('text', usetex=True)
-            #print(self.config_param.lsf)
-            plt.figure(1,figsize=(6,6))
-            plt.errorbar(obs_spec_dv,self.config_param.flux,yerr=self.config_param.dflux,label=r'$\rm Data$',drawstyle='steps-mid',color='k')
-            plt.plot(obs_spec_dv,self.model_flux,'b',lw=2,label=r'$\rm Best\,Fit$')
-            #plt.step(obs_spec_dv,self.config_param.dflux,'r')
-            plt.axhline(1,ls='--',c='g',lw=1.2)
-            plt.axhline(0,ls='--',c='g',lw=1.2)
-            plt.axvline(0,ls='--',c='g',lw=1.2)
-            plt.ylim([-0.1,1.4])
-            plt.xlim([-dv,dv])
-            plt.xlabel(r'$dv\,[\rm km/s]$',fontsize=15)
-            plt.ylabel(r'$\rm Normalized\,Flux$',fontsize=15)
-            plt.legend(loc='best')
+                obs_spec_wave = self.config_param.wave / (1+redshift) 
+                obs_spec_dv = c*(obs_spec_wave - central_wave) / central_wave
+                plt.rc('text', usetex=True)
+                #print(self.config_param.lsf)
+                plt.figure(1,figsize=(6,6))
+                plt.errorbar(obs_spec_dv,self.config_param.flux,yerr=self.config_param.dflux,label=r'$\rm Data$',drawstyle='steps-mid',color='k')
+                plt.plot(obs_spec_dv,self.model_flux,'b',lw=2,label=r'$\rm Best\,Fit$')
+                #plt.step(obs_spec_dv,self.config_param.dflux,'r')
+                plt.axhline(1,ls='--',c='g',lw=1.2)
+                plt.axhline(0,ls='--',c='g',lw=1.2)
+                plt.axvline(0,ls='--',c='g',lw=1.2)
+                plt.ylim([-0.1,1.4])
+                plt.xlim([-dv,dv])
+                plt.xlabel(r'$dv\,[\rm km/s]$',fontsize=15)
+                plt.ylabel(r'$\rm Normalized\,Flux$',fontsize=15)
+                plt.legend(loc='best')
+                
+                output_name = (self.config_param.data_product_path_plots + '/modelspec_'
+                              + self.config_param.chain_short_fname + '{}.pdf'.format(i))
+                plt.savefig(output_name,bbox_inches='tight',dpi=100)
+                plt.clf()
+                print('--> %s' % 'modelspec_' + self.config_param.chain_short_fname + '{}.pdf'.format(i))
+        
+        else:
+            kk = len(self.config_param.transitions_params_array[0,:,0,1])
+            print(kk)
             
-            output_name = (self.config_param.data_product_path_plots + '/modelspec_'
-                          + self.config_param.chain_short_fname + '{}.pdf'.format(i))
-            plt.savefig(output_name,bbox_inches='tight',dpi=100)
-            plt.clf()
-            print('--> %s' % 'modelspec_' + self.config_param.chain_short_fname + '{}.pdf'.format(i))
+            #if central_wave == None:
+                # Use the first transition as the central wavelength
+            for i in range(kk):
+                central_wave = self.config_param.transitions_params_array[0][i][0][1]
+                #else:
+                 #   central_wave = float(central_wave)
+        
+                obs_spec_wave = self.config_param.wave / (1+redshift) 
+                obs_spec_dv = c*(obs_spec_wave - central_wave) / central_wave
+                plt.rc('text', usetex=True)
+                #print(self.config_param.lsf)
+                plt.figure(1,figsize=(6,6))
+                plt.errorbar(obs_spec_dv,self.config_param.flux,yerr=self.config_param.dflux,label=r'$\rm Data$',drawstyle='steps-mid',color='k')
+                plt.plot(obs_spec_dv,self.model_flux,'b',lw=2,label=r'$\rm Best\,Fit$')
+                #plt.step(obs_spec_dv,self.config_param.dflux,'r')
+                plt.axhline(1,ls='--',c='g',lw=1.2)
+                plt.axhline(0,ls='--',c='g',lw=1.2)
+                plt.axvline(0,ls='--',c='g',lw=1.2)
+                plt.ylim([-0.1,1.4])
+                plt.xlim([-dv,dv])
+                plt.xlabel(r'$dv\,[\rm km/s]$',fontsize=15)
+                plt.ylabel(r'$\rm Normalized\,Flux$',fontsize=15)
+                plt.legend(loc='best')
+                
+                output_name = (self.config_param.data_product_path_plots + '/modelspec_'
+                              + self.config_param.chain_short_fname + '{}.pdf'.format(i))
+                plt.savefig(output_name,bbox_inches='tight',dpi=100)
+                plt.clf()
+                print('--> %s' % 'modelspec_' + self.config_param.chain_short_fname + '{}.pdf'.format(i))
 
     def corner_plot(self,nbins=30,fontsize=None,cfigsize=[6,6],truths=None):
         """
