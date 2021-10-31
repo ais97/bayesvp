@@ -182,7 +182,9 @@ class ProcessModel:
                 plt.rc('text', usetex=True)
                 #print(self.config_param.lsf)
                 plt.figure(1,figsize=(6,6))
-                plt.errorbar(obs_spec_dv,self.config_param.flux,yerr=self.config_param.dflux,label=r'$\rm Data$',drawstyle='steps-mid',color='k')
+                plt.errorbar(obs_spec_dv,self.config_param.flux,
+                             yerr=self.config_param.dflux,label=r'$\rm Data$',
+                             drawstyle='steps-mid',color='k',capthick=1)
                 plt.plot(obs_spec_dv,self.model_flux,'b',lw=2,label=r'$\rm Best\,Fit$')
                 #plt.step(obs_spec_dv,self.config_param.dflux,'r')
                 plt.axhline(1,ls='--',c='g',lw=1.2)
@@ -216,7 +218,9 @@ class ProcessModel:
                 plt.rc('text', usetex=True)
                 #print(self.config_param.lsf)
                 plt.figure(1,figsize=(6,6))
-                plt.errorbar(obs_spec_dv,self.config_param.flux,yerr=self.config_param.dflux,label=r'$\rm Data$',drawstyle='steps-mid',color='k')
+                plt.errorbar(obs_spec_dv,self.config_param.flux,
+                             yerr=self.config_param.dflux,label=r'$\rm Data$',
+                             drawstyle='steps-mid',color='k',capsize=2,elinewidth=0.5)
                 plt.plot(obs_spec_dv,self.model_flux,'b',lw=2,label=r'$\rm Best\,Fit$')
                 #plt.step(obs_spec_dv,self.config_param.dflux,'r')
                 plt.axhline(1,ls='--',c='g',lw=1.2)

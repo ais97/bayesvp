@@ -249,9 +249,12 @@ def generic_prediction(alpha, obs_spec_obj):
             for l in range(n_transitions):
                 if not np.isnan(obs_spec_obj.transitions_params_array[i][k][l]).any():
                     model_flux = general_intensity(temp_alpha[0],temp_alpha[1],temp_alpha[2],obs_spec_obj.wave,obs_spec_obj.transitions_params_array[i][k][l])
-                    if l<1 or k>0:
+                    
                     # Convolve (potentially )LSF for each region 
+                    if j!=0:
                         spec.append(convolve_lsf(model_flux,obs_spec_obj.lsf[k])) 
+                    else:
+                        spec.append(model_flux)
     # Return the convolved model flux with LSF
     return np.product(spec,axis=0)
 
