@@ -1,11 +1,10 @@
 spec_path /home/aiswarya/bayesvp/bayesvp/data/example
-! auto 2
-output oo2
-mcmc 500 1000 16 bic kombine
-%% my.spec 1387.0 1392.0
-% O VI 15 30 0.3479
-logN 10.0 20.0
+output o6
+mcmc 200 1000 8 bic kombine
+%% OVI.spec 1030.0 1033.0
+% O VI 15 30 0.0
+logN 10.0 18.0
 b    0.0 100.0
-z    0.34775 100.0
-LSF 1390
-
+z    0.0 100.0
+LSF 1030
+continuum 1

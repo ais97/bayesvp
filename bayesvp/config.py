@@ -198,7 +198,7 @@ class DefineParams:
         # Select regions of interests 
         all_inds = []
         for i in range(len(self.wave_begins)):
-            inds = np.where((wave>=self.wave_begins[i]) & (wave=<self.wave_ends[i]))[0]
+            inds = np.where(np.logical_and(wave>=self.wave_begins[i], wave<=self.wave_ends[i]))[0][0]
             all_inds.append(inds)
 
         all_inds = np.hstack(np.array(all_inds))
