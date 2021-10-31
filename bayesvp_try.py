@@ -20,25 +20,21 @@ import matplotlib.pyplot as plt
 #import WriteConfig
 
 spec_path = '/home/aiswarya/bayesvp/bayesvp/data/example'
-"""
+
 config = wc.WriteBayesVPConfig()
-print('line23')
 config.print_to_file(interactive_write=(True))
-print('line25')
 """
-config_fname = spec_path+'/config_OVI.dat'
-#print('line27')
+config_fname = spec_path+'/config_OVI.dat'S
 
 setup.bvp_mcmc(config_fname)
-#print('line30')
 
-config_fname = spec_path+'/config_OVI2.dat'
+redshift = 0.348
+dv = 300
+
+config_fname = spec_path+'/config_OVI1.dat'
 config_params = dp(config_fname)
 #print('line32')
 output = pm.ProcessModel(config_params)
-#print('line34')
-redshift = 0.348
-dv = 300
 
 output.plot_model_comparison(redshift, dv)
 output.corner_plot()
@@ -46,4 +42,14 @@ output.write_model_summary()
 output.write_model_spectrum()
 output.plot_gr_indicator()
 
+config_fname = spec_path+'/config_OVI2.dat'
+config_params = dp(config_fname)
+output = pm.ProcessModel(config_params)
 
+output.plot_model_comparison(redshift, dv)
+output.corner_plot()
+output.write_model_summary()
+output.write_model_spectrum()
+output.plot_gr_indicator()
+
+"""
