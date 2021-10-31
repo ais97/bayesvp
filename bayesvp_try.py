@@ -20,17 +20,17 @@ import matplotlib.pyplot as plt
 #import WriteConfig
 
 spec_path = '/home/aiswarya/bayesvp/bayesvp/data/example'
-
+"""
 config = wc.WriteBayesVPConfig()
 config.print_to_file(interactive_write=(True))
 """
-config_fname = spec_path+'/config_OVI.dat'S
-
+config_fname = spec_path+'/config_OVI.dat'
+#run fitting
 setup.bvp_mcmc(config_fname)
 
-redshift = 0.348
+redshift = 0.0
 dv = 300
-
+#plot fitting
 config_fname = spec_path+'/config_OVI1.dat'
 config_params = dp(config_fname)
 #print('line32')
@@ -51,5 +51,3 @@ output.corner_plot()
 output.write_model_summary()
 output.write_model_spectrum()
 output.plot_gr_indicator()
-
-"""
