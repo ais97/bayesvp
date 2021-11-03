@@ -165,15 +165,15 @@ class ProcessModel:
         """ Plot best fit model onto spectrum for visual inspection 
         """
         c = 299792.485 # [km/s]
-        #print(self.config_param.transitions_params_array[0][1][0][1])
+        #print(np.shape(self.config_param.transitions_params_array))
+        print(self.config_param.transitions_params_array[1][0][0][1])
+        kk = len(self.config_param.transitions_params_array)
         
-        kk = len(self.config_param.transitions_params_array[0,0,:,1])
-        print(kk)
         if kk!=1:
             #if central_wave == None:
                 # Use the first transition as the central wavelength
             for i in range(kk):
-                central_wave = self.config_param.transitions_params_array[0][0][i][1]
+                central_wave = self.config_param.transitions_params_array[0,0,i,1]
                 #else:
                  #   central_wave = float(central_wave)
         
@@ -237,7 +237,8 @@ class ProcessModel:
                 plt.savefig(output_name,bbox_inches='tight',dpi=100)
                 plt.clf()
                 print('--> %s' % 'modelspec_' + self.config_param.chain_short_fname + '{}.pdf'.format(i))
-
+                
+                
     def corner_plot(self,nbins=30,fontsize=None,cfigsize=[6,6],truths=None):
         """
         Make triangle plot for visuaizaliton of the 
