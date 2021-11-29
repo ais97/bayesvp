@@ -198,7 +198,7 @@ class DefineParams:
         # Select regions of interests 
         all_inds = []
         for i in range(len(self.wave_begins)):
-            inds = np.where(np.logical_and(wave>=self.wave_begins[i], wave<=self.wave_ends[i]))[0][0]
+            inds = np.where(np.logical_and(wave>=self.wave_begins[i], wave<=self.wave_ends[i]))[0]
             all_inds.append(inds)
 
         all_inds = np.hstack(np.array(all_inds))
@@ -377,6 +377,7 @@ class DefineParams:
                     # assume lsf file has one column 
                     fname = self.spec_path + '/database/' + lsf_fname
                     self.lsf.append(np.loadtxt(fname))
+                    #print(fname)
             elif len(lsf_line) == 1:
                 for lsf_fname in lsf_line:
                     # assume lsf file has one column 

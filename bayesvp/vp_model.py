@@ -14,7 +14,7 @@ from scipy.special import wofz
 import sys
 import os
 
-from bayesvp.utilities import convolve_lsf,get_transitions_params
+from bayesvp.utilities import convolve_lsf,get_transitions_params, convolve_lsf_new
 
 # constants [cgs units]
 h  = 6.6260755e-27   # planck constant
@@ -160,7 +160,9 @@ def general_intensity(logN, b, z, wave, atomic_params):
     tau = N*sigma0*f*voigt_profile_line(b,z,nu,nu0,gamma)
 
     # Return Normalized intensity
-    return np.exp(-tau.astype(np.float))
+    #return np.exp(-tau.astype(np.float))
+    #Return optical density
+    return tau
 
 def simple_spec(logN, b, z, wave, atom=None, state=None, lsf=1):
     """
@@ -223,10 +225,12 @@ def generic_prediction(alpha, obs_spec_obj):
     Model flux: 1D array;
         Predicted flux based on the paramters with length equal to 
         the length of the input wavelength array
-    """
+        """
+    disp_tab = '/home/aiswarya/bayesvp/bayesvp/data/example/database/05i1639ml_disp.fits'
+    lsf_file = '/home/aiswarya/bayesvp/bayesvp/data/example/database/aa_LSFTable_G130M_1300_LP1_cn.dat'
     component_flags = obs_spec_obj.vp_params_flags.reshape(obs_spec_obj.n_component,3)
-
-    spec = [] 
+    spec = 1
+    
     for i in range(obs_spec_obj.n_component):
         # Re-group parameters intro [logN, b, z] for each component
 
@@ -244,18 +248,25 @@ def generic_prediction(alpha, obs_spec_obj):
         # Compute spectrum for each component, region, and transition.
         n_wavelength_regions = len(obs_spec_obj.wave_begins)
         #print(obs_spec_obj.wave_begins)
+        tauk=0
         for k in range(n_wavelength_regions):  
             n_transitions = len(obs_spec_obj.transitions_params_array[i][k])
             for l in range(n_transitions):
                 if not np.isnan(obs_spec_obj.transitions_params_array[i][k][l]).any():
-                    model_flux = general_intensity(temp_alpha[0],temp_alpha[1],temp_alpha[2],obs_spec_obj.wave,obs_spec_obj.transitions_params_array[i][k][l])
+                    taul = general_intensity(temp_alpha[0],temp_alpha[1],temp_alpha[2],obs_spec_obj.wave,obs_spec_obj.transitions_params_array[i][k][l])
+                    tauk += taul
                     
-                    # Convolve (potentially )LSF for each region 
-                    spec.append(convolve_lsf(model_flux,obs_spec_obj.lsf[k])) 
-                    #else:
-                     #   spec.append(model_flux)
+            model_flux = np.exp(-tauk)
+            speci = convolve_lsf(model_flux,obs_spec_obj.lsf[-1])
+            spec *= speci 
     # Return the convolved model flux with LSF
-    return np.product(spec,axis=0)
+    
+    #spec = convolve_lsf(model_flux,obs_spec_obj.lsf[-1])
+    #new_wave, spec = convolve_lsf_new(obs_spec_obj.wave,model_flux,1300,lsf_file,disp_tab)
+    
+    return spec
+    #return model_flux
+    
 
 def poly_continuum(wave,flux, *params):
     # arbitrary polynomial continuum
