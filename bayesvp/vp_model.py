@@ -229,8 +229,8 @@ def generic_prediction(alpha, obs_spec_obj):
     disp_tab = '/home/aiswarya/bayesvp/bayesvp/data/example/database/05i1639ml_disp.fits'
     lsf_file = '/home/aiswarya/bayesvp/bayesvp/data/example/database/aa_LSFTable_G130M_1300_LP1_cn.dat'
     component_flags = obs_spec_obj.vp_params_flags.reshape(obs_spec_obj.n_component,3)
-    spec = 1
     
+    tauk=0
     for i in range(obs_spec_obj.n_component):
         # Re-group parameters intro [logN, b, z] for each component
 
@@ -248,23 +248,34 @@ def generic_prediction(alpha, obs_spec_obj):
         # Compute spectrum for each component, region, and transition.
         n_wavelength_regions = len(obs_spec_obj.wave_begins)
         #print(obs_spec_obj.wave_begins)
-        tauk=0
+        
         for k in range(n_wavelength_regions):  
             n_transitions = len(obs_spec_obj.transitions_params_array[i][k])
+            
             for l in range(n_transitions):
                 if not np.isnan(obs_spec_obj.transitions_params_array[i][k][l]).any():
                     taul = general_intensity(temp_alpha[0],temp_alpha[1],temp_alpha[2],obs_spec_obj.wave,obs_spec_obj.transitions_params_array[i][k][l])
                     tauk += taul
-                    
-            model_flux = np.exp(-tauk)
-            speci = convolve_lsf(model_flux,obs_spec_obj.lsf[-1])
-            spec *= speci 
+    flux = np.array([])
+    model_flux = np.exp(-tauk)
+    for k in range(n_wavelength_regions):
+        wave_ind0 = np.where(obs_spec_obj.wave>=obs_spec_obj.wave_begins[k])[0][0]
+        wave_ind1 = np.where(obs_spec_obj.wave<=obs_spec_obj.wave_ends[k])[0][-1]
+        
+        speci = convolve_lsf(model_flux[wave_ind0:wave_ind1+1],obs_spec_obj.lsf[k])
+        flux = np.append(flux,speci)
+        
+        """
+    model_flux = np.exp(-tauk)
+    speci = convolve_lsf(model_flux,obs_spec_obj.lsf[k])
+    spec *= speci 
+    """
     # Return the convolved model flux with LSF
     
     #spec = convolve_lsf(model_flux,obs_spec_obj.lsf[-1])
     #new_wave, spec = convolve_lsf_new(obs_spec_obj.wave,model_flux,1300,lsf_file,disp_tab)
     
-    return spec
+    return flux
     #return model_flux
     
 
