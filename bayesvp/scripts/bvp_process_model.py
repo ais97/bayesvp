@@ -258,7 +258,7 @@ class ProcessModel:
         output_name = self.config_param.data_product_path_plots + '/GR_' + \
                       self.config_param.chain_short_fname + '.pdf'
         plt.savefig(output_name,bbox_inches='tight',dpi=100)
-        plt.clf()
+        plt.show()
 
         print('--> %s' % 'GR_' + self.config_param.chain_short_fname + '.pdf')
 
