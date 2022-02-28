@@ -207,13 +207,13 @@ def bvp_mcmc(config_fname,print_config=True):
 					#index = np.where(model_evidence[:n+1] == np.min(model_evidence[:n+1]))[0]
 
 				# Compare BIC/AIC/Odds ratios
-				if compare_model(model_evidence[n-1], model_evidence[n],config_params.model_selection):
-					np.savetxt(config_params.mcmc_outputpath  + '/' + 
-								config_params.model_selection + '_' + 
-								config_params.chain_short_fname[:-1]+'.dat',
-								np.c_[components_count[:n+1],model_evidence[:n+1]],
-								fmt=('%d','%.4f'),header='nComponents\tValues')
-					break
+				#if compare_model(model_evidence[n-1], model_evidence[n],config_params.model_selection):
+				np.savetxt(config_params.mcmc_outputpath  + '/' +
+                           config_params.model_selection + '_' + 
+                           config_params.chain_short_fname[:-1]+'.dat',
+                           np.c_[components_count[:n+1],model_evidence[:n+1]],
+                           fmt=('%d','%.4f'),header='nComponents\tValues')
+					
 	else:
 		# Load config parameter object 
 		config_params = DefineParams(config_fname)

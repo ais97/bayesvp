@@ -194,7 +194,7 @@ class ProcessModel:
         output_name = (self.config_param.data_product_path_plots + '/modelspec_'
                       + self.config_param.chain_short_fname + f'{i}{k}{l}.pdf')
         plt.savefig(output_name,bbox_inches='tight',dpi=100)
-        plt.clf()
+        plt.show()
         print('--> %s' % 'modelspec_' + self.config_param.chain_short_fname + f'{i}{k}{l}.pdf')
         
         

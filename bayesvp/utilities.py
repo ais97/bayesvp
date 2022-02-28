@@ -16,6 +16,8 @@ from scipy.special import gamma
 from scipy.interpolate import interp1d
 from astropy.convolution import convolve
 import matplotlib.pyplot as plt
+font = {'family' : 'serif', 'weight' : 'normal', 'size'   : 11}
+plt.rc('font', **font)
 from astropy.io import fits
 from astropy.table import Table
 
@@ -687,7 +689,7 @@ def triage(par, weights, parnames, nbins = 30, hist2d_color=plt.cm.PuBu,
 	from matplotlib.colors import LogNorm
 	from matplotlib.ticker import MaxNLocator, NullLocator
 	import matplotlib.ticker as ticker
-
+    
 	import warnings
 	# ignore warnings if matplotlib version is older than 1.5.3
 	warnings.simplefilter(action='ignore', category=FutureWarning) 
@@ -703,15 +705,15 @@ def triage(par, weights, parnames, nbins = 30, hist2d_color=plt.cm.PuBu,
 	
 	if labelsize is None:
 		if npar <= 3: 
-			labelsize = 7
-		else:
 			labelsize = 5
+		else:
+			labelsize = 3
 
 	if fontsize is None:
 		if npar <= 3: 
-			fontsize = 11
+			fontsize = 9
 		else:
-			fontsize = 10
+			fontsize = 8
 
 
 	for h,v in it.product(range(npar), range(npar)):
@@ -800,6 +802,9 @@ def triage(par, weights, parnames, nbins = 30, hist2d_color=plt.cm.PuBu,
 	fig.get_tight_layout()
 	if figname:
 		plt.savefig(figname, dpi=120, bbox_inches='tight')
+        #plt.show()
+
+
 
 
 def printline():
