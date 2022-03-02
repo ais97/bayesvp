@@ -16,10 +16,10 @@ from bayesvp import utilities as util
 from bayesvp import mcmc_setup as setup
 from bayesvp.config import DefineParams as dp
 import matplotlib.pyplot as plt
-
+import glob
 #import WriteConfig
 
-spec_path = '/home/aiswarya/bayesvp/bayesvp/data/example'
+spec_path = '/home/aiswarya/bvprun/sim1'
 """
 config = wc.WriteBayesVPConfig()
 config.print_to_file(interactive_write=(True))
@@ -28,26 +28,30 @@ config_fname = spec_path+'/config_OVI.dat'
 #run fitting
 setup.bvp_mcmc(config_fname)
 
-redshift = 0.0
+redshift = 0.34758
 dv = 300
 #plot fitting
-config_fname = spec_path+'/config_OVI1.dat'
-config_params = dp(config_fname)
-#print('line32')
-output = pm.ProcessModel(config_params)
 
-output.plot_model_comparison(redshift, dv)
-output.corner_plot()
-output.write_model_summary()
-output.write_model_spectrum()
-output.plot_gr_indicator()
+compfiles = glob.glob(spec_path+'/config_OVI*.dat',recursive=True)
+print(compfiles)
+for file in compfiles:
+    try:
+        config_fname = file
+        config_params = dp(config_fname)
+        #print('line32')
+        output = pm.ProcessModel(config_params)
+        
+        output.plot_model_comparison(redshift, dv)
+        output.corner_plot()
+        output.write_model_summary()
+        output.write_model_spectrum()
+        output.plot_gr_indicator()
+        
+        
+    except:
+        continue
 
-config_fname = spec_path+'/config_OVI2.dat'
-config_params = dp(config_fname)
-output = pm.ProcessModel(config_params)
 
-output.plot_model_comparison(redshift, dv)
-output.corner_plot()
-output.write_model_summary()
-output.write_model_spectrum()
-output.plot_gr_indicator()
+import os
+
+os.system("""spd-say 'yo Aiswarya, lets party'""")
