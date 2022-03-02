@@ -555,6 +555,7 @@ def gr_indicator(chain):
 	Rgrs = np.zeros(ndim)
 	for n in range(ndim):
 		x = chain[:,:,n]
+		#print(x)
 		# average of within-chain variance over all walkers
 		W = np.mean(np.var(x,axis=0)) # i.e within-chain variance
 		mean_x_per_chain = np.mean(x,axis=0)
@@ -654,7 +655,7 @@ def conf_interval(x, pdf, conf_level):
     return np.sum(pdf[pdf > x])-conf_level
 
 def triage(par, weights, parnames, nbins = 30, hist2d_color=plt.cm.PuBu,
-		hist1d_color='#3681f9',figsize=[6,6], figname=None, fontsize=None,labelsize=None):
+		hist1d_color='C1',figsize=[6,6], figname=None, fontsize=11,labelsize=11):
 	"""
 	Plot the multi-dimensional and marginalized posterior distribution (e.g., `corner` plot)
 
@@ -747,7 +748,7 @@ def triage(par, weights, parnames, nbins = 30, hist2d_color=plt.cm.PuBu,
 			lvls = [sig3, sig2, sig1]   
 						
 			ax.pcolor(X, Y, (Hmasked), cmap=hist2d_color, norm = LogNorm())
-			ax.contour(hvals, linewidths=(1.0, 0.5, 0.25), colors='lavender', 
+			ax.contour(hvals, linewidths=(1.0, 0.5, 0.25), colors='k', 
 							levels = lvls, norm = LogNorm(), extent = [xedges[0], 
 							xedges[-1], yedges[0], yedges[-1]])
 

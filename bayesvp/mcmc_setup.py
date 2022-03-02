@@ -139,6 +139,8 @@ def bvp_mcmc_single(config_params,chain_filename_ncomp = None):
 		sys.exit('Error! No MCMC sampler selected.\nExiting program...')
 
 
+
+	print(np.shape(sampler.chain))
 	# Compute Gelman-Rubin Indicator
 	dnsteps = int(config_params.nsteps*0.05)
 	n_steps = []; Rgrs = []	
@@ -155,7 +157,7 @@ def bvp_mcmc_single(config_params,chain_filename_ncomp = None):
 	return 
 
 
-def bvp_mcmc(config_fname,print_config=True):
+def bvp_mcmc(config_fname,chain_fname,print_config=True):
 	"""
 	Run fixed number of component fit specified by the 
 	config file or make copies of the configs and run up 
@@ -178,6 +180,9 @@ def bvp_mcmc(config_fname,print_config=True):
 	# If so, create multiple configs file specified by n_component_max
 	auto_vp, n_component_min, n_component_max = determine_autovp(config_fname)
 
+
+
+
 	if auto_vp:
 		model_evidence = np.zeros(n_component_max-n_component_min+1)
 		for n in range(n_component_max-n_component_min+1):
@@ -189,7 +194,8 @@ def bvp_mcmc(config_fname,print_config=True):
 
 			# Load config parameter object 
 			config_params = DefineParams(config_fname_ncomp)
-
+			if print_config:
+			 config_params.print_config_params()
 			# Run MCMC
 			bvp_mcmc_single(config_params,config_params.chain_fname)
 
@@ -200,15 +206,15 @@ def bvp_mcmc(config_fname,print_config=True):
 			# compare with the previous fit 
 			if 0 < n <= n_component_max-1:
 
-				#if config_params.model_selection.lower() in ('odds','bf'):   
-				#	index = np.where(model_evidence[:n+1] == np.max(model_evidence[:n+1]))[0]
+				if config_params.model_selection.lower() in ('odds','bf'):   
+					index = np.where(model_evidence[:n+1] == np.max(model_evidence[:n+1]))[0]
 
-				#if config_params.model_selection.lower() in ('aic','bic'):
-					#index = np.where(model_evidence[:n+1] == np.min(model_evidence[:n+1]))[0]
+				if config_params.model_selection.lower() in ('aic','bic'):
+					index = np.where(model_evidence[:n+1] == np.min(model_evidence[:n+1]))[0]
 
 				# Compare BIC/AIC/Odds ratios
-				#if compare_model(model_evidence[n-1], model_evidence[n],config_params.model_selection):
-				np.savetxt(config_params.mcmc_outputpath  + '/' +
+				if compare_model(model_evidence[n-1], model_evidence[n],config_params.model_selection):
+					np.savetxt(config_params.mcmc_outputpath  + '/' +
                            config_params.model_selection + '_' + 
                            config_params.chain_short_fname[:-1]+'.dat',
                            np.c_[components_count[:n+1],model_evidence[:n+1]],
@@ -217,9 +223,7 @@ def bvp_mcmc(config_fname,print_config=True):
 	else:
 		# Load config parameter object 
 		config_params = DefineParams(config_fname)
-
 		if print_config:
-			config_params.print_config_params()
-		
+		 config_params.print_config_params()
 		# Run fit as specified in config
-		bvp_mcmc_single(config_params)	
+		bvp_mcmc_single(config_params,config_params.chain_fname)	
