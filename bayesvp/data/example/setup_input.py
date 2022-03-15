@@ -149,6 +149,7 @@ lsf_table = np.genfromtxt('/home/aiswarya/bvprun/lsf',delimiter=',')
 for file in filelist:
     all_lines = tab.Table.read(file,format='ascii')
     name = all_lines['qname'][0]
+    print(name)
     spec_fname = name+'.spec'
     spec_path = endpath+name+'/'
     cen_z = stats.mode(all_lines['col1'])[0][0]
@@ -158,31 +159,33 @@ for file in filelist:
         for st in state:
             at_st = at+st
             atomstate = tab.Table()
-            auto=1
+            
             for line in all_lines:
                 if at_st==line['col4'].split()[0] and line not in atomstate:
                     atomstate = tab.vstack([atomstate,line])
             met = tab.Table()
             for line in atomstate:
-                if len(met)==0:
+                if len(met)==0 or line['col4'] not in met['col4']:
                     met = tab.vstack([met,line])
-                elif line['col4'] in met['col4'] and auto<2:
-                    auto+=1
-                else:
-                    met = tab.vstack([met,line])
+               
+
             wave_start,wave_end=[],[]
             for m in met:
-                s0 = m['col3']-3
+                s0 = m['col3']-1
                 wave_start.append(s0)
-                s1 = m['col3']+3
+                s1 = m['col3']+1
                 wave_end.append(s1)
             
             wave_start = np.array(wave_start)
             wave_end = np.array(wave_end)
+            wave_start.sort()
+            wave_end.sort()
+            
+            
+            """
             ind = []
-            #print(wave_start,wave_end,'\n')
             for i in range(len(wave_start)):
-                if wave_end[i]>wave_start[i-1] and i!=0:
+                if i>0 and wave_end[i]>wave_start[i-1]:
                     wave_start[i] = wave_start[i-1]
                     ind.append(i-1)
                 if wave_start[i]<1135:
@@ -192,18 +195,22 @@ for file in filelist:
             wave_start = np.delete(wave_start,ind)
             wave_end = np.delete(wave_end,ind)
             #print(wave_start,wave_end,name,'\n')
-            #wave_start.sort()
-            #wave_end.sort()
+            wave_start.sort()
+            wave_end.sort()
+            print(np.column_stack((wave_start,wave_end)))
+            """
             lsf = []
             for i in range(len(wave_start)):
                 lsf_coarse = np.mean([wave_start[i],wave_end[i]])
                 lsf_diff = np.abs(lsf_coarse-lsf_table)
                 lsf.append(f'{lsf_table[np.argmin(lsf_diff)]:.0f}')
-            print(lsf)
+            if len(wave_start)>0:
+                print(np.column_stack((wave_start,wave_end)))
+                print(lsf)
             if len(lsf)>0:
                 write_config_file(spec_path,atom=at,state=st,spec_fname=spec_fname,
-                              wave_start=wave_start,wave_end=wave_end,auto=3,
-                              central_redshift=cen_z,lsf_file=lsf)  
+                             wave_start=wave_start,wave_end=wave_end,auto=3,
+                             central_redshift=cen_z,lsf_file=lsf)  
                     
                     
            # print(atomstate)
@@ -213,12 +220,13 @@ for file in filelist:
                    
          if 'Ly' in line['col4']:
              
-             if len(ly)==0:
+            if len(ly)==0:
                  ly = tab.vstack([ly,line])
 
-             else:
+            elif line['col4'] not in ly['col4']:
                  ly = tab.vstack([ly,line])
-        
+            else:
+                continue
         
     atom,state='H','I'
     wave_start = []
@@ -231,24 +239,36 @@ for file in filelist:
 
     wave_start = np.array(wave_start)
     wave_end = np.array(wave_end)
-
-    #print(wave_start,wave_end,'\n')
-    for i in range(len(wave_start)):
-        try:
-            if wave_end[i]>wave_start[i-1] and i!=0:
-                
-                wave_end[i] = wave_start[i-1]
-
-        except: continue
-    #print(wave_start,wave_end,name,'\n')
+    ind = []
     wave_start.sort()
     wave_end.sort()
+    
+    for i in range(len(wave_start)):
+        try:
+            if wave_end[i-1]>wave_start[i] and i!=0:
+                wave_start[i] = wave_start[i-1]
+                
+                ind.append(i-1)
+            
+            if wave_start[i]<1135:
+                wave_start[i] = 1135
+            elif wave_end[i]>1795:
+                wave_end = 1795 
+        except: continue
+    
+    wave_start = np.delete(wave_start,ind)
+    wave_end = np.delete(wave_end,ind)
+    
+    
+    
     lsf = []
     for i in range(len(wave_start)):
         lsf_coarse = np.mean([wave_start[i],wave_end[i]])
         lsf_diff = np.abs(lsf_coarse-lsf_table)
         lsf.append(f'{lsf_table[np.argmin(lsf_diff)]:.0f}')
-    print(lsf)
+    if len(wave_start)>0:
+        print(np.column_stack((wave_start,wave_end)))
+        print(lsf)
     if len(lsf)>0:
         write_config_file(spec_path,atom,state,spec_fname,wave_start,
                           wave_end,auto=3,central_redshift=cen_z,lsf_file=lsf)    
@@ -256,7 +276,4 @@ for file in filelist:
     
     
               
-
-
-
 

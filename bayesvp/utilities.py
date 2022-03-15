@@ -711,10 +711,10 @@ def triage(par, weights, parnames, nbins = 30, hist2d_color=plt.cm.PuBu,
 			labelsize = 3
 
 	if fontsize is None:
-		if npar <= 3: 
+		if npar == 3: 
 			fontsize = 9
 		else:
-			fontsize = 8
+			fontsize = 7
 
 
 	for h,v in it.product(range(npar), range(npar)):

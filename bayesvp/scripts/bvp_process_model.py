@@ -201,7 +201,7 @@ class ProcessModel:
 
                 
                 
-    def corner_plot(self,nbins=30,fontsize=None,cfigsize=[6,6],truths=None):
+    def corner_plot(self,nbins=30,fontsize=None,cfigsize=[12,12],truths=None):
         """
         Make triangle plot for visuaizaliton of the 
         multi-dimensional posterior

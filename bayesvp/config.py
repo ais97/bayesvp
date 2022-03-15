@@ -201,7 +201,7 @@ class DefineParams:
             inds = np.where(np.logical_and(wave>=self.wave_begins[i], wave<=self.wave_ends[i]))[0]
             all_inds.append(inds)
 
-        all_inds = np.hstack(np.array(all_inds))
+        all_inds = np.hstack(np.asarray(all_inds))
         wave = wave[all_inds]; flux = flux[all_inds]; dflux = dflux[all_inds]
         
         # Remove NaN pixels in flux
@@ -267,7 +267,7 @@ class DefineParams:
                 transitions_params_array[i].append(temp_params)
         
         # Shape = (n_component,n_regions,n_transitions,4) 
-        self.transitions_params_array = np.array(transitions_params_array)
+        self.transitions_params_array = np.asarray(transitions_params_array)
         self.vp_params = np.transpose(np.array([logNs,bs,redshifts]))
         self.n_component = len(component_lines) 
 
