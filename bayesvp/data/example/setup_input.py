@@ -17,16 +17,18 @@ c = 2.99792458e5 # velocity of light km/s
 zb = lambda z,dv: (1 + z) * np.sqrt((1 - dv / c) / (1 + dv / c)) - 1
 zr = lambda z,dv: (1 + z) * np.sqrt((1 + dv / c) / (1 - dv / c)) - 1
 
+
+
 def write_config_file(spec_path,atom,state,spec_fname,wave_start,wave_end,auto,
-                      central_redshift,lsf_file,logN=[10,18],b=[0,100],
-                      velocity_range=500,wstmsa=[100,10000,16,'bic','kombine']):
+                      central_redshift,lsf_file,logN=[8,18],b=[0,150],
+                      velocity_range=150,wstmsa=[200,5000,4,'bic','kombine']):
     min_logN,max_logN = logN
     min_b, max_b = b
     nwalkers, nsteps, nthreads, model_selection, mcmc_sampler = wstmsa
     z = str(central_redshift)[2:]
     config_fname =  f'{spec_path}config_{z}_{atom}{state}.dat'
     f = open( config_fname,'w')
-    f.write('spec_path {}\n'.format( spec_path))
+    f.write('spec_path {}\n'.format( spec_path[:-1]))
     if  auto > 1:
         f.write('! auto {} \n'.format(auto))
     output_chain_fname = f'{atom}_{state}_{z}'
@@ -42,7 +44,7 @@ def write_config_file(spec_path,atom,state,spec_fname,wave_start,wave_end,auto,
         for w in wave:
             f.write(f'{w} ')
         f.write('\n')
-    f.write('% {} {} 15 30 {}\n'.format( atom,  state, central_redshift))
+    f.write('% {} {} 12 30 {}\n'.format( atom,  state, central_redshift))
     
     f.write('logN {} {}\n'.format( min_logN,     max_logN))
     f.write('b    {} {}\n'.format( min_b,        max_b))
@@ -232,9 +234,9 @@ for file in filelist:
     wave_start = []
     wave_end = []
     for l in ly:
-        s0 = l['col3']-3
+        s0 = l['col3']-2
         wave_start.append(s0)
-        s1 = l['col3']+3
+        s1 = l['col3']+2
         wave_end.append(s1)
 
     wave_start = np.array(wave_start)
@@ -274,6 +276,7 @@ for file in filelist:
                           wave_end,auto=3,central_redshift=cen_z,lsf_file=lsf)    
         
     
-    
+
+
               
 

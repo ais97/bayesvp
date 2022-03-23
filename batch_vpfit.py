@@ -18,6 +18,7 @@ import glob
 import time
 
 path = '/home/aiswarya/bvprun/'
+
 config_files = glob.glob(f'{path}*/config*.dat',recursive=True)
 config_files1 = glob.glob(f'{path}*/config*1.dat',recursive=True)
 config_files2 = glob.glob(f'{path}*/config*2.dat',recursive=True)
@@ -29,11 +30,14 @@ for config in config_files:
         new_config.append(config)
         
 config_files = new_config
-n = len(config_files)
+config_files.sort()
 
-a = 27
+n = len(config_files)
+"""
+a = n-188
 n-=a
 print(n)
+#print(config_files[a:])
 for config in config_files[a:]:
     #if 'OVI' in config:
      #   continue
@@ -46,25 +50,35 @@ for config in config_files[a:]:
     #try:
     setup.bvp_mcmc(config,chain_fname)
     #except: continue
-    print(f'Runtime: {time.time()-start}\n')
+    print(f'Runtime: {(time.time()-start)/3600:2.0f}h:{((time.time()-start)%3600)/60:2.0f}m:{((time.time()-start)%60):2.2f}s\n')
     n-=1
     print(f'{n} files to go...')
-  
-config_paths = glob.glob(f'{path}*/bvp_output')
-for path in config_paths:
+"""
+config_paths = glob.glob(f'{path}*')
+config_paths.sort()
+print(config_paths[:12])
+
+for cp in config_paths:
     
-    for i in range(1,3):
-        config_files = glob.glob(f'{path}/config*{i}.dat',recursive=True)
+    for i in range(1,4):
+        config_files = glob.glob(f'{cp}/config*{i}.dat',recursive=True)
+        config_files.sort()
         #new = config.split(sep='.')
         #config_ = new[0]+f'{i}.'+new[1]
+        
         for config in config_files:
-            
-            config_params = dp(config)
-            output = pm.ProcessModel(config_params)
-            output.corner_plot()
-            output.write_model_summary()
-            output.write_model_spectrum()
-  
+            try:  
+                
+                config_params = dp(config)
+                output = pm.ProcessModel(config_params)
+                
+                output.corner_plot()
+                output.write_model_summary()
+                output.write_model_spectrum()
+                
+                
+            except: continue
+      
 import os
 os.system("""spd-say 'yo Aiswarya, lets party'""")
 

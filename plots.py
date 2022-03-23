@@ -14,27 +14,48 @@ from bayesvp import utilities as util
 from bayesvp import mcmc_setup as setup
 from bayesvp.config import DefineParams as dp
 import matplotlib.pyplot as plt
+import matplotlib
+#matplotlib.use('TkAgg')
+import numpy as np
+import astropy.table as tab
 import glob
 import time
 
 path = '/home/aiswarya/bvprun/'
 
-config_paths = glob.glob(f'{path}*/bvp_output')
-for path in config_paths:
-    
-    for i in range(1,3):
-        config_files = glob.glob(f'{path}/config*{i}.dat',recursive=True)
-        #new = config.split(sep='.')
-        #config_ = nepath = '/home/aiswarya/bvprun/'w[0]+f'{i}.'+new[1]
-        for config in config_files:
-            
-            config_params = dp(config)
-            output = pm.ProcessModel(config_params)
-            output.corner_plot()
-            output.write_model_summary()
-            output.write_model_spectrum()
-            
+los = glob.glob(f'{path}*/bvp_output/data_products/')
+#print(los)
 
+for line in los:
+    h1 = glob.glob(f'{line}ascii/spec_H_I_*1.dat')
+    outpath = f'{line}plots/'
+    for h in h1:
+        start = h.find('I_')+2
+        end = h.find('1.dat')
+        redshift = f'0.{h[start:end]}'
+        #print(redshift)
+        n = len(glob.glob(f'{line}ascii/spec_*_{h[start:end]}1.dat'))
+        fig,ax = plt.subplots(n,3,sharex=False)
+        
+        for i in range(3):
+            all_spec = glob.glob(f'{line}ascii/spec_*_{h[start:end]}{i+1}.dat')
+            all_spec.sort()
+            for j in range(n):
+                try:
+                    spec = tab.Table.read(all_spec[j],format='ascii')
+                    
+                    ax[j,i].plot(spec['wave'],spec['flux'],drawstyle='steps-mid',linewidth=0.3)
+                    ax[j,i].plot(spec['wave'],spec['error'],drawstyle='steps-mid',linewidth=0.3)
+                    ax[j,i].plot(spec['wave'],spec['model'],drawstyle='steps-mid',linewidth=0.3)
+                    
+                except: continue
+        
+        
+        
+        plt.show()  
+        plt.savefig(f'{outpath}{h[start:end]}_model.pdf',bbox_inches='tight')
+        
+        
 import os
 os.system("""spd-say 'yo Aiswarya, lets party'""")
 

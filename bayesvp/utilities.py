@@ -802,6 +802,8 @@ def triage(par, weights, parnames, nbins = 30, hist2d_color=plt.cm.PuBu,
 
 	fig.get_tight_layout()
 	if figname:
+		
+		#plt.title(figname)
 		plt.savefig(figname, dpi=120, bbox_inches='tight')
         #plt.show()
 
