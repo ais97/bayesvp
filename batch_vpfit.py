@@ -33,8 +33,8 @@ config_files = new_config
 config_files.sort()
 
 n = len(config_files)
-"""
-a = n-188
+# a = n-91,90,81,80,78 not done
+a = n-7
 n-=a
 print(n)
 #print(config_files[a:])
@@ -47,37 +47,19 @@ for config in config_files[a:]:
     config_params = dp(config)
     print(config_params.nsteps)
     chain_fname = config_params.chain_fname
-    #try:
-    setup.bvp_mcmc(config,chain_fname)
-    #except: continue
+    try:
+        setup.bvp_mcmc(config,chain_fname)
+
+    except AttributeError: 
+        setup.bvp_mcmc(config,chain_fname)
+    except ValueError:
+        print(f'find error in {config}')
+        continue
     print(f'Runtime: {(time.time()-start)/3600:2.0f}h:{((time.time()-start)%3600)/60:2.0f}m:{((time.time()-start)%60):2.2f}s\n')
     n-=1
     print(f'{n} files to go...')
-"""
-config_paths = glob.glob(f'{path}*')
-config_paths.sort()
-print(config_paths[:12])
 
-for cp in config_paths:
-    
-    for i in range(1,4):
-        config_files = glob.glob(f'{cp}/config*{i}.dat',recursive=True)
-        config_files.sort()
-        #new = config.split(sep='.')
-        #config_ = new[0]+f'{i}.'+new[1]
-        
-        for config in config_files:
-            try:  
-                
-                config_params = dp(config)
-                output = pm.ProcessModel(config_params)
-                
-                output.corner_plot()
-                output.write_model_summary()
-                output.write_model_spectrum()
-                
-                
-            except: continue
+
       
 import os
 os.system("""spd-say 'yo Aiswarya, lets party'""")

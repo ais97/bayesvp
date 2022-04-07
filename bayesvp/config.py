@@ -213,7 +213,7 @@ class DefineParams:
         inds = np.where((self.dflux < 0)); self.dflux[inds] = 0
 
         if len(self.wave) == 0 or len(self.flux) == 0 or len(self.dflux) == 0:
-            raise SystemExit('No data within specified wavelength range.' \
+            raise ValueError('No data within specified wavelength range.' \
                              'Please check config file and spectrum.')
             
 
@@ -262,10 +262,14 @@ class DefineParams:
             # Each component gets a set of all of the transitions data
             for j in range(len(self.wave_begins)):
                 # each wavelength regions gets all of the transitions
-                temp_params = get_transitions_params(atom,state,self.wave_begins[j],
-                                                    self.wave_ends[j],float(self.redshift))
-                transitions_params_array[i].append(temp_params)
-        
+                try:
+                    temp_params = get_transitions_params(atom,state,self.wave_begins[j],
+                                                        self.wave_ends[j],float(self.redshift))
+                    transitions_params_array[i].append(temp_params)
+                except ValueError: raise ValueError('Could not find any transitions of %s%s in wavelength range. ' % (atom,state) +
+        				'Check redshift and wavelength range. Exiting program...')
+                
+                
         # Shape = (n_component,n_regions,n_transitions,4) 
         self.transitions_params_array = np.asarray(transitions_params_array)
         self.vp_params = np.transpose(np.array([logNs,bs,redshifts]))

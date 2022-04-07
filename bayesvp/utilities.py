@@ -122,8 +122,8 @@ def model_info_criterion(obs_spec_obj):
 		return -2*lnL + n_params*np.log(data_length)
 
 	else:
-		print('model_selection is not defined to either be aic or bic')
-		sys.exit()
+		raise ValueError('model_selection is not defined to either be aic or bic')
+		
 
 def estimate_bayes_factor(traces, logp, r=0.05):
 	"""
@@ -645,7 +645,7 @@ def get_transitions_params(atom,state,wave_start,wave_end,redshift):
  
 
 	if len(inds) == 0:
-		sys.exit('Could not find any transitions of %s%s in wavelength range. ' % (atom,state) +
+		raise ValueError('Could not find any transitions of %s%s in wavelength range. ' % (atom,state) +
 				'Check redshift and wavelength range. Exiting program...' )
 	else:
 		return np.array([osc_f[inds],wave[inds],Gamma[inds], mass[inds]]).T

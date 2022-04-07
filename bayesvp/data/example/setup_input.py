@@ -21,7 +21,7 @@ zr = lambda z,dv: (1 + z) * np.sqrt((1 + dv / c) / (1 - dv / c)) - 1
 
 def write_config_file(spec_path,atom,state,spec_fname,wave_start,wave_end,auto,
                       central_redshift,lsf_file,logN=[8,18],b=[0,150],
-                      velocity_range=150,wstmsa=[200,5000,4,'bic','kombine']):
+                      velocity_range=150,wstmsa=[100,10000,4,'bic','kombine']):
     min_logN,max_logN = logN
     min_b, max_b = b
     nwalkers, nsteps, nthreads, model_selection, mcmc_sampler = wstmsa
